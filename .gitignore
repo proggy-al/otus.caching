@@ -3,3 +3,5 @@
 ################################################################################
 
 /src/.vs
+/src/Otus.Caching/bin/Debug/netcoreapp2.2
+/src/Otus.Caching/obj
