@@ -1,14 +1,12 @@
-
-version: "3.4"
+version: "3.7"
 
 networks:
-  ocach-network:
+  caching-network:
     driver: bridge
 
 services:
   api:
-    container_name: ocach-api
-    image: ocach/api
+    container_name: api
     restart: always
     depends_on:
       - redis
@@ -22,12 +20,10 @@ services:
     ports:
       - 5000:5000
     networks:
-      - ocach-network
-    volumes:
-      - ~/.aspnet/https:/https:ro
+      - caching-network
 
   redis:
-    container_name: ocach-redis
+    container_name: redis
     image: redis:latest
     restart: always
     ports:
@@ -35,4 +31,4 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
-      - ocach-network
+      - caching-network

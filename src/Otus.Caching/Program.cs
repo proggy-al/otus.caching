@@ -13,7 +13,9 @@ internal class Program
         builder.Services.AddSwaggerGen();
 
         // memory cache
-        builder.Services.AddMemoryCache();
+        builder.Services.AddMemoryCache(
+            //optins => optins.SizeLimit = 50
+            );
 
         // distributed cache
         builder.Services.AddDistributedMemoryCache();

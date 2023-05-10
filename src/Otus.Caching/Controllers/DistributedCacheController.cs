@@ -9,7 +9,7 @@ namespace Otus.Caching.Controllers
 {
     [Route("date/distributed")]
     [ApiController]
-    internal class DistributedCacheController : ControllerBase
+    public class DistributedCacheController : ControllerBase
     {
         private readonly IDistributedCache _distributedCache;
         private readonly ILogger<DistributedCacheController> _logger;
