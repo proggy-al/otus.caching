@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,7 +25,7 @@ namespace Otus.Caching.Controllers
         [HttpGet("now/response-vary-cached")]
         [ResponseCache(Location = ResponseCacheLocation.Any, VaryByHeader = "User-Agent", Duration = 120)]
         public IActionResult ResponseCachedUserAgent()
-        {
+        {          
             return new DateTimeActionResult(_logger, DateTimeOffset.Now);
         }
 

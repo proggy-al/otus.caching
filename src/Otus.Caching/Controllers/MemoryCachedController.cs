@@ -13,7 +13,9 @@ namespace Otus.Caching.Controllers
 
         private readonly ILogger<MemoryCachedController> _logger;
         private readonly IMemoryCache _memoryCache;
-        private readonly static object _sync;
+        #region double-check locking
+        //private readonly static object _sync = new();
+        #endregion
 
         public MemoryCachedController(ILogger<MemoryCachedController> logger, IMemoryCache memoryCache)
         {
@@ -35,7 +37,9 @@ namespace Otus.Caching.Controllers
                 return Ok(memory);
             }
 
-            lock (_sync)
+            #region double-check locking
+            //lock (_sync)
+            #endregion
             {
                 var cachedDate = _memoryCache.GetOrCreate<DateTime>(cacheKey, entry =>
                 {
