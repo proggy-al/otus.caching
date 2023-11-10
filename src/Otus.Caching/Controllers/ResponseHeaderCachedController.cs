@@ -6,6 +6,7 @@ namespace Otus.Caching.Controllers
 {
     [Route("date")]
     [ApiController]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 10)]
     public class ResponseHeaderCachedController : ControllerBase
     {
         private readonly ILogger<ResponseHeaderCachedController> _logger;
@@ -30,7 +31,8 @@ namespace Otus.Caching.Controllers
         }
 
         [HttpGet("now/response-no-cached")]
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [ResponseCache(Location = ResponseCacheLocation.None, Duration = 0, NoStore = true)]
+
         public IActionResult ResponseNoCached()
         {
             return new DateTimeActionResult(_logger, DateTimeOffset.Now);

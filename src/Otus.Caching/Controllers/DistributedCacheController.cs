@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Otus.Caching.Controllers
 {
@@ -11,10 +8,13 @@ namespace Otus.Caching.Controllers
     [ApiController]
     public class DistributedCacheController : ControllerBase
     {
+        private const string redisKey = "DistributedCacheController";
+
         private readonly IDistributedCache _distributedCache;
         private readonly ILogger<DistributedCacheController> _logger;
 
-        public DistributedCacheController(ILogger<DistributedCacheController> logger, IDistributedCache distributedCache)
+        public DistributedCacheController(ILogger<DistributedCacheController> logger, 
+            IDistributedCache distributedCache)
         {
             _logger = logger;
             _distributedCache = distributedCache;
@@ -23,20 +23,18 @@ namespace Otus.Caching.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            const string nowKey = "DistributedCacheController";
-
-            string serialized = await _distributedCache.GetStringAsync(nowKey);
-            if (serialized != null)
+            string serializedValue = await _distributedCache.GetStringAsync(redisKey);
+            if (serializedValue != null)
             {
-                _logger.LogInformation("From redis");
-                return Ok(JsonSerializer.Deserialize<DateTime>(serialized));
+                _logger.LogInformation("From Redis");
+                return Ok(JsonSerializer.Deserialize<DateTime>(serializedValue));
             }
 
             _logger.LogInformation("Current date is requested");
             var response = DateTime.Now;
 
             await _distributedCache.SetStringAsync(
-                key: nowKey,
+                key: redisKey,
                 value: JsonSerializer.Serialize(response),
                 options: new DistributedCacheEntryOptions
                 {

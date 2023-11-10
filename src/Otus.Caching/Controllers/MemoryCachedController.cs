@@ -9,15 +9,17 @@ namespace Otus.Caching.Controllers
     [ApiController]
     public class MemoryCachedController : ControllerBase
     {
-        private const string cacheKey = "MemoryCachedNowController";
+        //double-ckeck locking
+        private readonly static object _sync = new();
+
+        private const string cacheKey = "MemoryCachedController";
 
         private readonly ILogger<MemoryCachedController> _logger;
         private readonly IMemoryCache _memoryCache;
-        #region double-check locking
-        //private readonly static object _sync = new();
-        #endregion
-
-        public MemoryCachedController(ILogger<MemoryCachedController> logger, IMemoryCache memoryCache)
+        
+        public MemoryCachedController(ILogger<MemoryCachedController> logger,
+            IMemoryCache memoryCache
+            )
         {
             _logger = logger;
             _memoryCache = memoryCache;
@@ -32,26 +34,25 @@ namespace Otus.Caching.Controllers
         [HttpGet("now/memory-cached")]
         public IActionResult MemoryCached()
         {
-            if (_memoryCache.TryGetValue(cacheKey, out var memory))
+            if (_memoryCache.TryGetValue(cacheKey, out var memoryValue))
             {
-                return Ok(memory);
+                return Ok(memoryValue);
             }
 
-            #region double-check locking
-            //lock (_sync)
-            #endregion
+            //double-check locking
+            lock (_sync)
             {
                 var cachedDate = _memoryCache.GetOrCreate<DateTime>(cacheKey, entry =>
                 {
                     var date = DateTime.Now;
                     entry.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(5);
-                    //entry.SlidingExpiration= TimeSpan.FromSeconds(5);
+                    //entry.SlidingExpiration = TimeSpan.FromSeconds(5);
                     //entry.SetPriority = CacheItemPriority.Low;
                     //entry.Size = 1;
+                    
+                    entry.ExpirationTokens.Add(new RandomTimerChangeToken());
 
-                    //entry.ExpirationTokens = new[] { date };
-
-                    Thread.Sleep(3000);
+                    //Thread.Sleep(3000);
 
                     _logger.LogInformation("\r\n *** Requested values (current date:{0})", date);
 
@@ -59,7 +60,7 @@ namespace Otus.Caching.Controllers
                 });
 
                 return Ok(cachedDate);
-            }            
+            }
         }
     }
 }

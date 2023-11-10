@@ -12,22 +12,22 @@ internal class Program
         builder.Services.AddLogging();
         builder.Services.AddSwaggerGen();
 
-        // memory cache        
+        // memory cache
         builder.Services.AddMemoryCache(
-            //optins => optins.SizeLimit = 50
+            //options => options.SizeLimit = 50
             );
 
         // response cache
         builder.Services.AddResponseCaching();
 
-        // distributed cache
+        // distributed cache 
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = builder.Configuration.GetConnectionString("Redis");
         });
 
-        var app = builder.Build();
+        var app = builder.Build(); 
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -43,11 +43,12 @@ internal class Program
         //app.Use(async (context, next) =>
         //{
         //    context.Response.GetTypedHeaders().CacheControl =
-        //        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-        //        {
-        //            Public = true,
-        //            MaxAge = TimeSpan.FromSeconds(10)
-        //        };
+        //    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+        //    {
+        //        Public = true,
+        //        MaxAge = TimeSpan.FromSeconds(10)
+        //    };
+
         //    await next();
         //});
 
