@@ -12,20 +12,20 @@ internal class Program
         builder.Services.AddLogging();
         builder.Services.AddSwaggerGen();
 
-        // memory cache
-        builder.Services.AddMemoryCache(
-            //options => options.SizeLimit = 50
-            );
+                // memory cache
+                builder.Services.AddMemoryCache(
+                    //options => options.SizeLimit = 50
+                    );
 
-        // response cache
-        builder.Services.AddResponseCaching();
+                // response cache
+                builder.Services.AddResponseCaching();
 
-        // distributed cache 
-        builder.Services.AddDistributedMemoryCache();
-        builder.Services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = builder.Configuration.GetConnectionString("Redis");
-        });
+                // distributed cache 
+                builder.Services.AddDistributedMemoryCache();
+                builder.Services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+                });
 
         var app = builder.Build(); 
 
@@ -38,19 +38,23 @@ internal class Program
 
         app.UseHttpsRedirection();
 
-        //app.UseResponseCaching();
+        #region
 
-        //app.Use(async (context, next) =>
-        //{
-        //    context.Response.GetTypedHeaders().CacheControl =
-        //    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-        //    {
-        //        Public = true,
-        //        MaxAge = TimeSpan.FromSeconds(10)
-        //    };
+        app.UseResponseCaching();
 
-        //    await next();
-        //});
+        app.Use(async (context, next) =>
+        {
+            context.Response.GetTypedHeaders().CacheControl =
+            new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromSeconds(10)
+            };
+
+            await next();
+        });
+
+        #endregion
 
         app.UseAuthorization();
 

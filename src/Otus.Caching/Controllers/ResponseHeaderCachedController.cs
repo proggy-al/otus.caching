@@ -32,7 +32,6 @@ namespace Otus.Caching.Controllers
 
         [HttpGet("now/response-no-cached")]
         [ResponseCache(Location = ResponseCacheLocation.None, Duration = 0, NoStore = true)]
-
         public IActionResult ResponseNoCached()
         {
             return new DateTimeActionResult(_logger, DateTimeOffset.Now);

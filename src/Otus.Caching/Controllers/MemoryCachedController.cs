@@ -9,14 +9,16 @@ namespace Otus.Caching.Controllers
     [ApiController]
     public class MemoryCachedController : ControllerBase
     {
+        #region
         //double-ckeck locking
         private readonly static object _sync = new();
+        #endregion
 
         private const string cacheKey = "MemoryCachedController";
 
         private readonly ILogger<MemoryCachedController> _logger;
         private readonly IMemoryCache _memoryCache;
-        
+
         public MemoryCachedController(ILogger<MemoryCachedController> logger,
             IMemoryCache memoryCache
             )
@@ -39,28 +41,33 @@ namespace Otus.Caching.Controllers
                 return Ok(memoryValue);
             }
 
+            #region
             //double-check locking
             lock (_sync)
             {
-                var cachedDate = _memoryCache.GetOrCreate<DateTime>(cacheKey, entry =>
-                {
-                    var date = DateTime.Now;
-                    entry.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(5);
-                    //entry.SlidingExpiration = TimeSpan.FromSeconds(5);
-                    //entry.SetPriority = CacheItemPriority.Low;
-                    //entry.Size = 1;
-                    
-                    entry.ExpirationTokens.Add(new RandomTimerChangeToken());
+            #endregion
 
-                    //Thread.Sleep(3000);
+            var cachedDate = _memoryCache.GetOrCreate<DateTime>(cacheKey, entry =>
+            {
+                var date = DateTime.Now;
+                entry.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(50);
+                //entry.SlidingExpiration = TimeSpan.FromSeconds(5);
+                //entry.Priority = CacheItemPriority.Low;
+                //entry.Size = 10;
 
-                    _logger.LogInformation("\r\n *** Requested values (current date:{0})", date);
+                //entry.ExpirationTokens.Add(new RandomTimerChangeToken());
 
-                    return date;
-                });
+                //Thread.Sleep(3000);
 
-                return Ok(cachedDate);
-            }
+                _logger.LogInformation("\r\n *** Requested values (current date:{0})", date);
+
+                return date;
+            });
+
+            return Ok(cachedDate);
         }
+        #region
+            }
+        #endregion
     }
 }
