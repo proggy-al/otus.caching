@@ -13,7 +13,6 @@ namespace Otus.Caching
             _timer = new Timer(OnTick, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
         }
 
-
         public bool HasChanged => _hasChanged;
 
         public bool ActiveChangeCallbacks => true;

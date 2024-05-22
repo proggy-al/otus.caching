@@ -5,22 +5,22 @@ networks:
     driver: bridge
 
 services:
-  api:
-    container_name: api
-    restart: always
-    depends_on:
-      - redis
-    build:
-      context: ./src
-      dockerfile: Dockerfile
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:5000
-      ConnectionStrings:Redis: redis:6379,ssl=False,abortConnect=False
-    ports:
-      - 5000:5000
-    networks:
-      - caching-network
+  # api:
+  #   container_name: api
+  #   restart: always
+  #   depends_on:
+  #     - redis
+  #   build:
+  #     context: ./src
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     ASPNETCORE_URLS: http://+:5000
+  #     ConnectionStrings:Redis: redis:6379,ssl=False,abortConnect=False
+  #   ports:
+  #     - 5000:5000
+  #   networks:
+  #     - caching-network
 
   redis:
     container_name: redis

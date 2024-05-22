@@ -38,7 +38,7 @@ namespace Otus.Caching.Controllers
                 value: JsonSerializer.Serialize(response),
                 options: new DistributedCacheEntryOptions
                 {
-                    SlidingExpiration = TimeSpan.FromSeconds(15)
+                    SlidingExpiration = TimeSpan.FromSeconds(30)
                 });
 
             return Ok(response);

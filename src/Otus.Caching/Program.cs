@@ -12,20 +12,26 @@ internal class Program
         builder.Services.AddLogging();
         builder.Services.AddSwaggerGen();
 
-                // memory cache
-                builder.Services.AddMemoryCache(
+        #region 
+        // memory cache
+        builder.Services.AddMemoryCache(
                     //options => options.SizeLimit = 50
                     );
+        #endregion
 
-                // response cache
-                builder.Services.AddResponseCaching();
+        #region 
+        // response cache
+        builder.Services.AddResponseCaching();
+        #endregion
 
-                // distributed cache 
-                builder.Services.AddDistributedMemoryCache();
+        #region
+        // distributed cache 
+        builder.Services.AddDistributedMemoryCache();
                 builder.Services.AddStackExchangeRedisCache(options =>
                 {
                     options.Configuration = builder.Configuration.GetConnectionString("Redis");
                 });
+        #endregion
 
         var app = builder.Build(); 
 
@@ -37,8 +43,9 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
-
-        #region
+        
+        #region 
+        // response cache
 
         app.UseResponseCaching();
 
@@ -53,7 +60,7 @@ internal class Program
 
             await next();
         });
-
+        
         #endregion
 
         app.UseAuthorization();
